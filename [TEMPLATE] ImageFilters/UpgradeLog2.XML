@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="AdaptiveMedianFilter">
+</Property><Property Name="Solution File" Value="C:\Users\Ahmed\Desktop\Algorithms 2010\PROJECTs\Image Filters\[TEMPLATE] ImageFilters\AdaptiveMedianFilter.sln">
+</Property><Property Name="User Options File" Value="C:\Users\Ahmed\Desktop\Algorithms 2010\PROJECTs\Image Filters\[TEMPLATE] ImageFilters\AdaptiveMedianFilter.suo">
+</Property><Property Name="Date" Value="Tuesday, December 07, 2010">
+</Property><Property Name="Time" Value="1:01 AM">
+</Property><Property Name="Log Number" Value="2">
+</Property></Properties><Event ErrorLevel="0" Project="" Source="AdaptiveMedianFilter.sln" Description="File successfully backed up as C:\Users\Ahmed\Desktop\Algorithms 2010\PROJECTs\Image Filters\[TEMPLATE] ImageFilters\Backup1\AdaptiveMedianFilter.sln">
+</Event><Event ErrorLevel="0" Project="" Source="AdaptiveMedianFilter.suo" Description="File successfully backed up as C:\Users\Ahmed\Desktop\Algorithms 2010\PROJECTs\Image Filters\[TEMPLATE] ImageFilters\Backup1\AdaptiveMedianFilter.suo">
+</Event><Event ErrorLevel="0" Project="AdaptiveMedianFilter" Source="AdaptiveMedianFilter\AdaptiveMedianFilter.csproj" Description="Project file successfully backed up as C:\Users\Ahmed\Desktop\Algorithms 2010\PROJECTs\Image Filters\[TEMPLATE] ImageFilters\Backup1\AdaptiveMedianFilter\AdaptiveMedianFilter.csproj">
+</Event><Event ErrorLevel="0" Project="AdaptiveMedianFilter" Source="AdaptiveMedianFilter\Form1.cs" Description="File successfully backed up as C:\Users\Ahmed\Desktop\Algorithms 2010\PROJECTs\Image Filters\[TEMPLATE] ImageFilters\Backup1\AdaptiveMedianFilter\Form1.cs">
+</Event><Event ErrorLevel="0" Project="AdaptiveMedianFilter" Source="AdaptiveMedianFilter\Form1.Designer.cs" Description="File successfully backed up as C:\Users\Ahmed\Desktop\Algorithms 2010\PROJECTs\Image Filters\[TEMPLATE] ImageFilters\Backup1\AdaptiveMedianFilter\Form1.Designer.cs">
+</Event><Event ErrorLevel="0" Project="AdaptiveMedianFilter" Source="AdaptiveMedianFilter\ImageOperations.cs" Description="File successfully backed up as C:\Users\Ahmed\Desktop\Algorithms 2010\PROJECTs\Image Filters\[TEMPLATE] ImageFilters\Backup1\AdaptiveMedianFilter\ImageOperations.cs">
+</Event><Event ErrorLevel="0" Project="AdaptiveMedianFilter" Source="AdaptiveMedianFilter\Program.cs" Description="File successfully backed up as C:\Users\Ahmed\Desktop\Algorithms 2010\PROJECTs\Image Filters\[TEMPLATE] ImageFilters\Backup1\AdaptiveMedianFilter\Program.cs">
+</Event><Event ErrorLevel="0" Project="AdaptiveMedianFilter" Source="AdaptiveMedianFilter\Properties\AssemblyInfo.cs" Description="File successfully backed up as C:\Users\Ahmed\Desktop\Algorithms 2010\PROJECTs\Image Filters\[TEMPLATE] ImageFilters\Backup1\AdaptiveMedianFilter\Properties\AssemblyInfo.cs">
+</Event><Event ErrorLevel="0" Project="AdaptiveMedianFilter" Source="AdaptiveMedianFilter\Properties\Resources.Designer.cs" Description="File successfully backed up as C:\Users\Ahmed\Desktop\Algorithms 2010\PROJECTs\Image Filters\[TEMPLATE] ImageFilters\Backup1\AdaptiveMedianFilter\Properties\Resources.Designer.cs">
+</Event><Event ErrorLevel="0" Project="AdaptiveMedianFilter" Source="AdaptiveMedianFilter\Properties\Settings.Designer.cs" Description="File successfully backed up as C:\Users\Ahmed\Desktop\Algorithms 2010\PROJECTs\Image Filters\[TEMPLATE] ImageFilters\Backup1\AdaptiveMedianFilter\Properties\Settings.Designer.cs">
+</Event><Event ErrorLevel="0" Project="AdaptiveMedianFilter" Source="AdaptiveMedianFilter\ZedGraph.cs" Description="File successfully backed up as C:\Users\Ahmed\Desktop\Algorithms 2010\PROJECTs\Image Filters\[TEMPLATE] ImageFilters\Backup1\AdaptiveMedianFilter\ZedGraph.cs">
+</Event><Event ErrorLevel="0" Project="AdaptiveMedianFilter" Source="AdaptiveMedianFilter\Properties\Settings.settings" Description="File successfully backed up as C:\Users\Ahmed\Desktop\Algorithms 2010\PROJECTs\Image Filters\[TEMPLATE] ImageFilters\Backup1\AdaptiveMedianFilter\Properties\Settings.settings">
+</Event><Event ErrorLevel="0" Project="AdaptiveMedianFilter" Source="AdaptiveMedianFilter\Form1.resx" Description="File successfully backed up as C:\Users\Ahmed\Desktop\Algorithms 2010\PROJECTs\Image Filters\[TEMPLATE] ImageFilters\Backup1\AdaptiveMedianFilter\Form1.resx">
+</Event><Event ErrorLevel="0" Project="AdaptiveMedianFilter" Source="AdaptiveMedianFilter\Properties\Resources.resx" Description="File successfully backed up as C:\Users\Ahmed\Desktop\Algorithms 2010\PROJECTs\Image Filters\[TEMPLATE] ImageFilters\Backup1\AdaptiveMedianFilter\Properties\Resources.resx">
+</Event><Event ErrorLevel="0" Project="AdaptiveMedianFilter" Source="AdaptiveMedianFilter\AdaptiveMedianFilter.csproj" Description="Project converted successfully">
+</Event><Event ErrorLevel="3" Project="AdaptiveMedianFilter" Source="AdaptiveMedianFilter\AdaptiveMedianFilter.csproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="" Source="AdaptiveMedianFilter.sln" Description="The solution file does not require conversion.">
+</Event><Event ErrorLevel="3" Project="" Source="AdaptiveMedianFilter.sln" Description="No Conversion Required">
+</Event><Event ErrorLevel="0" Project="AdaptiveMedianFilter" Source="AdaptiveMedianFilter\AdaptiveMedianFilter.csproj" Description="Scan complete: Upgrade not required for project files.">
+</Event></UpgradeLog>

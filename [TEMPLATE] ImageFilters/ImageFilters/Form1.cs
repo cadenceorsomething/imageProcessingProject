@@ -1,0 +1,112 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Text;
+using System.Windows.Forms;
+
+namespace ImageFilters
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+            button1.Enabled = false;
+            button2.Enabled = false;
+        }
+
+        byte[,] ImageMatrix;
+
+        private void btnOpen_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog1 = new OpenFileDialog();
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                // open the browsed image and display it
+                string OpenedFilePath = openFileDialog1.FileName;
+                ImageMatrix = ImageOperations.OpenImage(OpenedFilePath);
+                ImageOperations.DisplayImage(ImageMatrix, pictureBox1);
+
+                // enable filters
+                button1.Enabled=true;
+                button2.Enabled=true;
+            }
+        }
+
+
+        private void pictureBox2_Click(object sender, EventArgs e)
+        {
+            // i added this to stop an error from recurring
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (ImageMatrix == null)
+            {
+                MessageBox.Show("ImageMatrix is null");
+                return;
+            }
+
+            byte[,] medianImage = ImageOperations.MedianFilter(ImageMatrix, 5);
+
+
+            ImageOperations.DisplayImage(medianImage, pictureBox2);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (ImageMatrix == null)
+            {
+                MessageBox.Show("ImageMatrix is null");
+                return;
+            }
+
+            // byte[,] medianImage = ImageOperations.MidPointFilterSlow(ImageMatrix, 7);
+            //ImageOperations.DisplayImage(medianImage, pictureBox2);
+
+            using (Form2 options = new Form2() )
+            {
+                // presses cancel
+                if (options.ShowDialog() != DialogResult.OK)
+                    return;
+
+
+                int windowSize = options.WindowSize;
+                bool efficient = options.UseEfficientAlgorithm;
+
+
+
+                byte[,] result;
+
+                if (efficient)
+                {
+                    result = ImageOperations.MidPointFilterEffecient(
+                        ImageMatrix, windowSize);
+                }
+                else
+                {
+                    result = ImageOperations.MidPointFilterSlow(
+                        ImageMatrix, windowSize);
+                }
+
+                ImageOperations.DisplayImage(result, pictureBox2);
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            if (ImageMatrix == null)
+            {
+                MessageBox.Show("ImageMatrix is null");
+                return;
+            }
+
+            byte[,] bilateralImage = ImageOperations.BilateralFilter(ImageMatrix, 7, 6, 25);
+
+
+            ImageOperations.DisplayImage(bilateralImage, pictureBox2);
+        }
+    }
+}
