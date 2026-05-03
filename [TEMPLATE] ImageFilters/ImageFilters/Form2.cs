@@ -14,6 +14,10 @@ namespace ImageFilters
         {
             InitializeComponent();
             radioButton1.Checked = true;
+            numericUpDown1.Minimum = 3;
+            numericUpDown1.Value = 3;
+            numericUpDown1.Increment = 2;
+            this.AcceptButton = button1;
         }
 
         private void radioButton1_CheckedChanged(object sender, EventArgs e)

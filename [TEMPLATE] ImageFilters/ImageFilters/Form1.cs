@@ -5,16 +5,23 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using System.Diagnostics;
+
+
 
 namespace ImageFilters
 {
     public partial class Form1 : Form
     {
+        private Button[] buttonArr;
         public Form1()
         {
             InitializeComponent();
-            button1.Enabled = false;
-            button2.Enabled = false;
+
+            buttonArr = new Button[] { button1, button2, button3 };
+
+            foreach (var btn in buttonArr)
+                btn.Enabled = false;
         }
 
         byte[,] ImageMatrix;
@@ -26,12 +33,14 @@ namespace ImageFilters
             {
                 // open the browsed image and display it
                 string OpenedFilePath = openFileDialog1.FileName;
+
                 ImageMatrix = ImageOperations.OpenImage(OpenedFilePath);
                 ImageOperations.DisplayImage(ImageMatrix, pictureBox1);
 
                 // enable filters
-                button1.Enabled=true;
-                button2.Enabled=true;
+
+                foreach (var btn in buttonArr)
+                    btn.Enabled = true;
             }
         }
 
@@ -49,8 +58,14 @@ namespace ImageFilters
                 return;
             }
 
+            timeLabel.Text = "processing...";
+            var stopWatch = Stopwatch.StartNew();
             byte[,] medianImage = ImageOperations.MedianFilter(ImageMatrix, 5);
-
+            
+            stopWatch.Stop();
+            double seconds = stopWatch.Elapsed.TotalSeconds;
+            seconds = Math.Round(seconds, 2);
+            timeLabel.Text = $"{seconds}s"; 
 
             ImageOperations.DisplayImage(medianImage, pictureBox2);
         }
@@ -80,6 +95,8 @@ namespace ImageFilters
 
                 byte[,] result;
 
+                timeLabel.Text = "processing...";
+                var stopWatch = Stopwatch.StartNew();
                 if (efficient)
                 {
                     result = ImageOperations.MidPointFilterEffecient(
@@ -90,6 +107,11 @@ namespace ImageFilters
                     result = ImageOperations.MidPointFilterSlow(
                         ImageMatrix, windowSize);
                 }
+                stopWatch.Stop();
+                double seconds = stopWatch.Elapsed.TotalSeconds;
+                seconds = Math.Round(seconds, 2);
+                timeLabel.Text = $"{seconds}s";
+
 
                 ImageOperations.DisplayImage(result, pictureBox2);
             }
@@ -103,7 +125,14 @@ namespace ImageFilters
                 return;
             }
 
+            timeLabel.Text = "processing...";
+            var stopWatch = Stopwatch.StartNew();
             byte[,] bilateralImage = ImageOperations.BilateralFilter(ImageMatrix, 7, 6, 25);
+
+            stopWatch.Stop();
+            double seconds = stopWatch.Elapsed.TotalSeconds;
+            seconds = Math.Round(seconds, 2);
+            timeLabel.Text = $"{seconds}s";
 
 
             ImageOperations.DisplayImage(bilateralImage, pictureBox2);

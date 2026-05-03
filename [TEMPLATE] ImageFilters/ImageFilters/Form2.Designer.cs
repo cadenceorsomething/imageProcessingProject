@@ -65,9 +65,9 @@ namespace ImageFilters
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(190, 107);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(84, 16);
+            this.label2.Size = new System.Drawing.Size(80, 16);
             this.label2.TabIndex = 2;
-            this.label2.Text = "WindowSize:";
+            this.label2.Text = "Windiw size:";
             // 
             // radioButton2
             // 

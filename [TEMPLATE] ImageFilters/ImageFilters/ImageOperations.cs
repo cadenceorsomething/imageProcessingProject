@@ -245,7 +245,6 @@ namespace ImageFilters
         }
 
 
-        // intensity function
         static private double RangeWeight(int intensityDelta, double sigma_B)
         {
             return Math.Exp(-(intensityDelta * intensityDelta) / (2 * sigma_B * sigma_B));
@@ -260,7 +259,7 @@ namespace ImageFilters
         }
 
 
-
+        // didnt work with salt and pepper noise, better with mild noise.
         static public byte[,] BilateralFilter(byte[,] image, int WindowSize, double sigma_S, double sigma_B)
         {
             if (WindowSize % 2 == 0)
