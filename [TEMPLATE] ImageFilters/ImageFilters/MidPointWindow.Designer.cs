@@ -1,6 +1,6 @@
 namespace ImageFilters
 {
-    partial class Form2
+    partial class MidPointWindow
     {
         /// <summary>
         /// Required designer variable.

@@ -2,10 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-using System.Diagnostics;
+using ZedGraph;
 
 
 
@@ -18,7 +19,7 @@ namespace ImageFilters
         {
             InitializeComponent();
 
-            buttonArr = new Button[] { button1, button2, button3 };
+            buttonArr = new Button[] { MedianBtn, MidpointBtn, BilateralBtn };
 
             foreach (var btn in buttonArr)
                 btn.Enabled = false;
@@ -35,7 +36,7 @@ namespace ImageFilters
                 string OpenedFilePath = openFileDialog1.FileName;
 
                 ImageMatrix = ImageOperations.OpenImage(OpenedFilePath);
-                ImageOperations.DisplayImage(ImageMatrix, pictureBox1);
+                ImageOperations.DisplayImage(ImageMatrix, pictureBoxRight);
 
                 // enable filters
 
@@ -50,7 +51,8 @@ namespace ImageFilters
             // i added this to stop an error from recurring
         }
 
-        private void button1_Click(object sender, EventArgs e)
+
+        private void median_Click(object sender, EventArgs e)
         {
             if (ImageMatrix == null)
             {
@@ -58,19 +60,76 @@ namespace ImageFilters
                 return;
             }
 
-            timeLabel.Text = "processing...";
-            var stopWatch = Stopwatch.StartNew();
-            byte[,] medianImage = ImageOperations.MedianFilter(ImageMatrix, 5);
-            
-            stopWatch.Stop();
-            double seconds = stopWatch.Elapsed.TotalSeconds;
-            seconds = Math.Round(seconds, 2);
-            timeLabel.Text = $"{seconds}s"; 
+            MedianWindow form = new MedianWindow();
 
-            ImageOperations.DisplayImage(medianImage, pictureBox2);
+            if (form.ShowDialog() != DialogResult.OK)
+                return;
+
+            string method = form.SelectedMethod;
+            int k = form.K;
+
+            int height = ImageMatrix.GetLength(0);
+            int width = ImageMatrix.GetLength(1);
+
+            byte[,] result = new byte[height, width];
+
+            int[] countArray = new int[256];
+            int windowSize = form.windowSize;
+
+
+            int offset = windowSize / 2;
+
+            byte[] window = new byte[windowSize * windowSize];
+
+            TimeLabel.Text = "processing...";
+            var stopwatch = Stopwatch.StartNew();
+
+            for (int i = offset; i < height - offset; i++)
+            {
+                for (int j = offset; j < width - offset; j++)
+                {
+                    int index = 0;
+
+                    // build window
+                    for (int x = -offset; x <= offset; x++)
+                    {
+                        for (int y = -offset; y <= offset; y++)
+                        {
+                            window[index++] = ImageMatrix[i + x, j + y];
+                        }
+                    }
+
+                    byte median;
+
+                    if (method == "Quick Sort")
+                    {
+                        median = ImageOperations.GetMedian_QuickSort((byte[])window.Clone());
+                    }
+                    else if (method == "Counting Sort")
+                    {
+                        median = ImageOperations.GetMedian_CountingSort(window, countArray);
+                    }
+                    else if (method == "Select K-th Element")
+                    {
+                        median = ImageOperations.GetMedian_SelectKthElement((byte[])window.Clone(), 0, window.Length - 1, k);
+                    }
+                    else // Hybrid
+                    {
+                        median = ImageOperations.GetMedian_HybridInsertion(window, countArray);
+                    }
+
+                    result[i, j] = median;
+                }
+            }
+
+            stopwatch.Stop();
+            TimeLabel.Text = $"{Math.Round(stopwatch.Elapsed.TotalSeconds, 2)}s";
+
+            ImageOperations.DisplayImage(result, pictureBoxLeft);
         }
 
-        private void button2_Click(object sender, EventArgs e)
+
+        private void midpoint_Click(object sender, EventArgs e)
         {
             if (ImageMatrix == null)
             {
@@ -81,7 +140,7 @@ namespace ImageFilters
             // byte[,] medianImage = ImageOperations.MidPointFilterSlow(ImageMatrix, 7);
             //ImageOperations.DisplayImage(medianImage, pictureBox2);
 
-            using (Form2 options = new Form2() )
+            using (MidPointWindow options = new MidPointWindow() )
             {
                 // presses cancel
                 if (options.ShowDialog() != DialogResult.OK)
@@ -95,7 +154,7 @@ namespace ImageFilters
 
                 byte[,] result;
 
-                timeLabel.Text = "processing...";
+                TimeLabel.Text = "processing...";
                 var stopWatch = Stopwatch.StartNew();
                 if (efficient)
                 {
@@ -104,20 +163,20 @@ namespace ImageFilters
                 }
                 else
                 {
-                    result = ImageOperations.MidPointFilterSlow(
+                    result = ImageOperations.MidPointFilterNaive(
                         ImageMatrix, windowSize);
                 }
                 stopWatch.Stop();
                 double seconds = stopWatch.Elapsed.TotalSeconds;
                 seconds = Math.Round(seconds, 2);
-                timeLabel.Text = $"{seconds}s";
+                TimeLabel.Text = $"{seconds}s";
 
 
-                ImageOperations.DisplayImage(result, pictureBox2);
+                ImageOperations.DisplayImage(result, pictureBoxLeft);
             }
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void bilateral_Click(object sender, EventArgs e)
         {
             if (ImageMatrix == null)
             {
@@ -125,17 +184,22 @@ namespace ImageFilters
                 return;
             }
 
-            timeLabel.Text = "processing...";
+            TimeLabel.Text = "processing...";
             var stopWatch = Stopwatch.StartNew();
             byte[,] bilateralImage = ImageOperations.BilateralFilter(ImageMatrix, 7, 6, 25);
 
             stopWatch.Stop();
             double seconds = stopWatch.Elapsed.TotalSeconds;
             seconds = Math.Round(seconds, 2);
-            timeLabel.Text = $"{seconds}s";
+            TimeLabel.Text = $"{seconds}s";
 
 
-            ImageOperations.DisplayImage(bilateralImage, pictureBox2);
+            ImageOperations.DisplayImage(bilateralImage, pictureBoxLeft);
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

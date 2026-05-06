@@ -8,9 +8,9 @@ using System.Windows.Forms;
 
 namespace ImageFilters
 {
-    public partial class Form2 : Form
+    public partial class MidPointWindow : Form
     {
-        public Form2()
+        public MidPointWindow()
         {
             InitializeComponent();
             radioButton1.Checked = true;

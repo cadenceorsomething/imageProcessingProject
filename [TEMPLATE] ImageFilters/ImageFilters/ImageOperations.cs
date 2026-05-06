@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Diagnostics;
 using System.Drawing;
-using System.Windows.Forms;
 using System.Drawing.Imaging;
+using System.Text;
+using System.Windows.Forms;
+using ZedGraph;
 
 namespace ImageFilters
 {
@@ -148,7 +150,7 @@ namespace ImageFilters
 
 
         // the sort makes it O(n*log(n))
-        public static byte[,] MidPointFilterSlow(byte[,] image, int windowSize)
+        public static byte[,] MidPointFilterNaive(byte[,] image, int windowSize)
         {
             if (windowSize % 2 == 0)
                 throw new ArgumentException("windowSize HAS to be odd.");
@@ -317,6 +319,194 @@ namespace ImageFilters
 
             return result;
         }
+        private byte[,] dummyImage = new byte[200, 200];
+
+        public double TimeMidpointNaive(int windowSize)
+        {
+            var stopWatch = Stopwatch.StartNew();
+            MidPointFilterNaive(dummyImage, windowSize);
+            stopWatch.Stop();
+            return stopWatch.Elapsed.TotalMilliseconds;
+        }
+
+        public double TimeMidpointEfficient(int windowSize)
+        {
+            var stopWatch = Stopwatch.StartNew();
+            MidPointFilterEffecient(dummyImage, windowSize);
+            stopWatch.Stop();
+            return stopWatch.Elapsed.TotalMilliseconds;
+        }
+
+        // from here on out its my colleagues' works
+
+        public static byte GetMedian_QuickSort(byte[] window)
+        {
+            Array.Sort(window);
+            return window[window.Length / 2];
+        }
+
+        // 2. Counting Sort 
+        public static byte GetMedian_CountingSort(byte[] window, int[] countArray)
+        {
+            Array.Clear(countArray, 0, 256);
+            for (int i = 0; i < window.Length; i++) countArray[window[i]]++;
+            int medianIndex = window.Length / 2;
+            int sum = 0;
+            for (int i = 0; i < 256; i++)
+            {
+                sum += countArray[i];
+                if (sum > medianIndex) return (byte)i;
+            }
+            return 0;
+        }
+
+        // 3. Quick Select 
+        private static void Swap(ref byte a, ref byte b) { byte temp = a; a = b; b = temp; }
+        private static int Partition(byte[] arr, int left, int right)
+        {
+            byte pivot = arr[right];
+            int i = left - 1;
+            for (int j = left; j < right; j++)
+            {
+                if (arr[j] <= pivot) { i++; Swap(ref arr[i], ref arr[j]); }
+            }
+            Swap(ref arr[i + 1], ref arr[right]);
+            return i + 1;
+        }
+        public static byte GetMedian_SelectKthElement(byte[] arr, int left, int right, int k)
+        {
+            if (left == right) return arr[left];
+            int pivotIndex = Partition(arr, left, right);
+            if (k == pivotIndex) return arr[k];
+            else if (k < pivotIndex) return GetMedian_SelectKthElement(arr, left, pivotIndex - 1, k);
+            else return GetMedian_SelectKthElement(arr, pivotIndex + 1, right, k);
+        }
+
+        // ==============================================================================
+        // 3. الخوارزمية الهجينة الذكية (Smart Hybrid Sort) للمسة الاحترافية (Super Bonus)
+        // ==============================================================================
+        public static byte GetMedian_HybridInsertion(byte[] window, int[] countArray)
+        {
+            int n = window.Length;
+
+            // إذا كان حجم النافذة صغيراً (أقل من أو يساوي 25 بيكسل مثل 3x3 و 5x5)
+            // استخدم خوارزمية الترتيب بالإدراج (Insertion Sort) لأنها الأسرع هنا
+            if (n <= 25)
+            {
+                for (int i = 1; i < n; ++i)
+                {
+                    byte key = window[i];
+                    int j = i - 1;
+                    while (j >= 0 && window[j] > key)
+                    {
+                        window[j + 1] = window[j];
+                        j = j - 1;
+                    }
+                    window[j + 1] = key;
+                }
+                return window[n / 2];
+            }
+            // إذا كان حجم النافذة كبيراً (7x7 أو أكبر)
+            // استخدم ترتيب العد (Counting Sort) لأنه لا يتأثر بزيادة الأرقام
+            else
+            {
+                Array.Clear(countArray, 0, 256);
+                for (int i = 0; i < n; i++) countArray[window[i]]++;
+
+                int medianIndex = n / 2;
+                int sum = 0;
+
+                for (int i = 0; i < 256; i++)
+                {
+                    sum += countArray[i];
+                    if (sum > medianIndex)
+                        return (byte)i;
+                }
+                return 0;
+            }
+        }
+
+        // ==============================================================================
+        // 4. الفلتر التكيفي الذكي (Adaptive Median Filter) 
+        // يشمل معالجة الحواف (Bounds Clamping) ويستخدم الذكاء الهجين
+        // ==============================================================================
+        private static byte GetAdaptivePixel(byte[,] img, int x, int y, int width, int height, int maxWindowSize, int[] countArray)
+        {
+            byte z_xy = img[y, x];
+            byte last_z_med = z_xy;
+
+            // الفلتر يبدأ بنافذة 3x3 ويكبر تدريجياً تلقائياً إذا وجد شوشرة (Noise)
+            for (int ws = 3; ws <= maxWindowSize; ws += 2)
+            {
+                int pad = ws / 2;
+                int windowLength = ws * ws;
+                byte[] windowPixels = new byte[windowLength]; // مصفوفة لتخزين بيكسلات النافذة الحالية
+                int idx = 0;
+
+                int min = 255, max = 0;
+
+                // استخراج بيكسلات النافذة وحساب المينيمم والماكسيمم مع معالجة الحواف
+                for (int wy = -pad; wy <= pad; wy++)
+                {
+                    // === تعديل الحواف (Bounds Clamping) للـ Y ===
+                    int currentY = y + wy;
+                    if (currentY < 0) currentY = 0; 
+                    else if (currentY >= height) currentY = height - 1; 
+
+                    for (int wx = -pad; wx <= pad; wx++)
+                    {
+                        // === تعديل الحواف (Bounds Clamping) للـ X ===
+                        int currentX = x + wx;
+                        if (currentX < 0) currentX = 0; 
+                        else if (currentX >= width) currentX = width - 1; 
+
+                        byte val = img[currentY, currentX];
+                        windowPixels[idx++] = val; // تخزين البيكسل في المصفوفة
+
+                        if (val < min) min = val;
+                        if (val > max) max = val;
+                    }
+                }
+
+                // استدعاء الخوارزمية الهجينة الذكية لتجلب الوسيط بأسرع طريقة ممكنة
+                byte z_med = GetMedian_HybridInsertion(windowPixels, countArray);
+                
+                last_z_med = z_med;
+
+                // التكيف والذكاء: التأكد أن الوسيط ليس شوشرة
+                if (z_med > min && z_med < max)
+                {
+                    // التأكد أن البيكسل الأصلي ليس شوشرة
+                    if (z_xy > min && z_xy < max)
+                        return z_xy; // احتفظ بالبيكسل الأصلي للحفاظ على جودة الصورة
+                    else
+                        return z_med; // استبدل الشوشرة بالوسيط النظيف
+                }
+                // إذا كان الوسيط شوشرة، ستكمل الحلقة وتكبر النافذة (ws += 2) تلقائياً!
+            }
+
+            return last_z_med;
+        }
+
+        public static byte[,] ApplyAdaptiveMedianFilter(byte[,] ImageMatrix, int maxWindowSize)
+        {
+            int height = GetHeight(ImageMatrix);
+            int width = GetWidth(ImageMatrix);
+            byte[,] result = new byte[height, width];
+
+            // تعريف مصفوفة العد مرة واحدة فقط لتقليل الـ Complexity واستغلال الذاكرة بذكاء
+            int[] countArray = new int[256];
+
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    result[y, x] = GetAdaptivePixel(ImageMatrix, x, y, width, height, maxWindowSize, countArray);
+                }
+            }
+            return result;
+        }
+
 
     }
 }
