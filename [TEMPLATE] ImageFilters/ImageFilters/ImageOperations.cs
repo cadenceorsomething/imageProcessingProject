@@ -109,46 +109,7 @@ namespace ImageFilters
 
 
         // O(n^2*log(n)) solution.
-        // i will write more notes later
-        public static byte[,] MedianFilter(byte[,] image, int windowSize)
-        {
-            if (windowSize % 2 == 0)
-                throw new ArgumentException("windowSize HAS to be odd.");
-
-            int height = image.GetLength(0);
-            int width = image.GetLength(1);
-
-            byte[,] result = new byte[height, width];
-            Array.Copy(image, result, image.Length);
-
-            int r = windowSize / 2;
-
-
-
-            for (int i = r; i < height - r; i++)
-            {
-                for (int j = r; j < width - r; j++)
-                {
-                    List<byte> window = new List<byte>();
-
-
-                    for (int x = -r; x <= r; x++)
-                    {
-                        for (int y = -r; y <= r; y++)
-                        {
-                            window.Add(image[i + x, j + y]);
-                        }
-                    }
-
-                    window.Sort();
-                    result[i, j] = window[window.Count / 2];
-                }
-            }
-
-            return result;
-        }
-
-
+        // i will write more notes later.
         // the sort makes it O(n*log(n))
         public static byte[,] MidPointFilterNaive(byte[,] image, int windowSize)
         {
@@ -320,22 +281,6 @@ namespace ImageFilters
             return result;
         }
         private byte[,] dummyImage = new byte[200, 200];
-
-        public double TimeMidpointNaive(int windowSize)
-        {
-            var stopWatch = Stopwatch.StartNew();
-            MidPointFilterNaive(dummyImage, windowSize);
-            stopWatch.Stop();
-            return stopWatch.Elapsed.TotalMilliseconds;
-        }
-
-        public double TimeMidpointEfficient(int windowSize)
-        {
-            var stopWatch = Stopwatch.StartNew();
-            MidPointFilterEffecient(dummyImage, windowSize);
-            stopWatch.Stop();
-            return stopWatch.Elapsed.TotalMilliseconds;
-        }
 
         // from here on out its my colleagues' works
 
